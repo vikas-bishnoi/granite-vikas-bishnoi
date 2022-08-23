@@ -8,4 +8,3 @@ class TasksController < ApplicationController
       end
     end
   end
-  
