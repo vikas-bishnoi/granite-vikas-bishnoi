@@ -24,6 +24,11 @@ class TasksController < ApplicationController
     respond_with_success(t("successfully_updated"))
   end
 
+  def destroy
+    @task.destroy!
+    respond_with_json
+  end
+
   private
 
     def load_task!
