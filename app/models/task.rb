@@ -1,13 +1,20 @@
 # frozen_string_literal: true
 
 class Task < ApplicationRecord
+  before_validation :set_title
   validates :title, presence: true, length: { maximum: 50 }
   validates :slug, uniqueness: true
 
   before_create :set_slug
   validate :slug_not_changed
 
+  before_save :change_title
+
   private
+
+    def set_title
+      self.title = "Pay electricity bill"
+    end
 
     def set_slug
       title_slug = title.parameterize

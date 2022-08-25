@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TasksController < ApplicationController
-  before_action :load_task!, only: %i[show update]
+  before_action :load_task!, only: %i[show update destroy]
 
   def index
     tasks = Task.all
