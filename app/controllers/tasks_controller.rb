@@ -8,8 +8,8 @@ class TasksController < ApplicationController
 
   def index
     tasks = policy_scope(Task)
-    tasks_with_assigned_user = tasks.as_json(include: { assigned_user: { only: %i[name id] } })
-    respond_with_json(tasks_with_assigned_user)
+    @pending_tasks = tasks.pending.as_json(include: { assigned_user: { only: %i[name id] } })
+    @completed_tasks = tasks.completed
   end
 
   def create
@@ -27,19 +27,27 @@ class TasksController < ApplicationController
   def update
     authorize @task
     @task.update!(task_params)
-    respond_with_success(t("successfully_updated", entity: "Task"))
+    respond_with_success(t("successfully_updated", entity: "Task")) unless params.key?(:quiet)
   end
 
   def destroy
     authorize @task
     @task.destroy!
-    respond_with_json
+    respond_with_success("successfully_deleted", entity: "Task") unless params.key?(:quiet)
   end
 
   private
 
     def task_params
-      params.require(:task).permit(:title, :assigned_user_id)
+      params.require(:task).permit(:title, :assigned_user_id, :progress)
+    end
+
+    def ensure_authorized_update_to_restricted_attrs
+      is_editing_restricted_params = Task::RESTRICTED_ATTRIBUTES.any? { |a| task_params.key?(a) }
+      is_not_owner = @task.task_owner_id != @current_user.id
+      if is_editing_restricted_params && is_not_owner
+        handle_authorization_error
+      end
     end
 
     def load_task!
