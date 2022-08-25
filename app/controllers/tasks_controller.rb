@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TasksController < ApplicationController
   after_action :verify_authorized, except: :index
   after_action :verify_policy_scoped, only: :index
@@ -10,7 +12,6 @@ class TasksController < ApplicationController
     respond_with_json(tasks_with_assigned_user)
   end
 
-
   def create
     task = current_user.created_tasks.new(task_params)
     authorize task
@@ -20,12 +21,13 @@ class TasksController < ApplicationController
 
   def show
     authorize @task
+    @comments = @task.comments.order("created_at DESC")
   end
 
   def update
     authorize @task
     @task.update!(task_params)
-    respond_with_success(t("successfully_updated", entity: "Task")
+    respond_with_success(t("successfully_updated", entity: "Task"))
   end
 
   def destroy
