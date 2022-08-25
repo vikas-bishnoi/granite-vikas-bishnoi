@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 json.task do
-  json.partial! "tasks/task", task: @task
+  json.partial! "task", task: @task
 
   json.comments @comments do |comment|
     json.extract! comment,

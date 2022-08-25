@@ -2,7 +2,7 @@
 
 json.tasks do
   json.pending @pending_tasks do |pending_task|
-    json.partial! "tasks/task", task: pending_task
+    json.partial! "task", task: pending_task
     json.extract! pending_task,
       :progress,
       :status

@@ -8,8 +8,8 @@ class TasksController < ApplicationController
 
   def index
     tasks = policy_scope(Task)
-    @pending_tasks = tasks.pending.as_json(include: { assigned_user: { only: %i[name id] } })
-    @completed_tasks = tasks.completed
+    @pending_tasks = tasks.includes(:assigned_user).of_status(:pending)
+    @completed_tasks = tasks.of_status(:completed)
   end
 
   def create
@@ -38,8 +38,19 @@ class TasksController < ApplicationController
 
   private
 
+    def self.of_status(progress)
+      if progress == :pending
+        starred = pending.starred.order("updated_at DESC")
+        unstarred = pending.unstarred.order("updated_at DESC")
+      else
+        starred = completed.starred.order("updated_at DESC")
+        unstarred = completed.unstarred.order("updated_at DESC")
+      end
+      starred + unstarred
+    end
+
     def task_params
-      params.require(:task).permit(:title, :assigned_user_id, :progress)
+      params.require(:task).permit(:title, :assigned_user_id, :progress, :status)
     end
 
     def ensure_authorized_update_to_restricted_attrs

@@ -2,7 +2,10 @@
 
 class Task < ApplicationRecord
   RESTRICTED_ATTRIBUTES = %i[title task_owner_id assigned_user_id]
+
   enum progress: { pending: "pending", completed: "completed" }
+  enum status: { unstarred: "unstarred", starred: "starred" }
+
   belongs_to :task_owner, foreign_key: "task_owner_id", class_name: "User"
   belongs_to :assigned_user, foreign_key: "assigned_user_id", class_name: "User"
 
