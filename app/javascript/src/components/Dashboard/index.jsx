@@ -9,7 +9,7 @@ import Table from "components/Tasks/Table";
 
 const Dashboard = ({ history }) => {
   const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const fetchTasks = async () => {
     try {

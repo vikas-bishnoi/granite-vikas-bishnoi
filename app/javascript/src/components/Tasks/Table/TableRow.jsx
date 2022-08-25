@@ -1,25 +1,53 @@
 import React from "react";
 
-import TableHeader from "./TableHeader";
-import TableRow from "./TableRow";
+import PropTypes from "prop-types";
 
-const Table = ({ data, showTask, destroyTask }) => (
-  <div className="flex flex-col">
-    <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-        <div className="border-b border-bb-gray-200 shadow overflow-hidden sm:rounded-lg">
-          <table className="divide-y min-w-full divide-gray-200">
-            <TableHeader />
-            <TableRow
-              data={data}
-              destroyTask={destroyTask}
-              showTask={showTask}
-            />
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+import Tooltip from "components/Tooltip";
+
+const TableRow = ({ data, destroyTask, showTask }) => (
+  <tbody className="divide-y divide-gray-200 bg-white">
+    {data.map(rowData => (
+      <tr key={rowData.id}>
+        <td
+          className="truncate block w-64 px-6 py-4 text-sm
+            font-medium capitalize leading-8 text-bb-purple"
+        >
+          <Tooltip content={rowData.title} delay={200} direction="top">
+            <div className="truncate max-w-64 ">{rowData.title}</div>
+          </Tooltip>
+        </td>
+        <td
+          className="whitespace-no-wrap px-6 py-4 text-sm
+            font-medium leading-5 text-gray-900"
+        >
+          {rowData.assigned_user.name}
+        </td>
+        <td className="cursor-pointer px-6 py-4 text-right text-sm font-medium leading-5">
+          <a className="text-bb-purple" onClick={() => showTask(rowData.slug)}>
+            Show
+          </a>
+        </td>
+        <td
+          className="cursor-pointer px-6 py-4 text-right
+            text-sm font-medium leading-5"
+        >
+          <a
+            className="text-red-500
+              hover:text-red-700"
+            onClick={() => destroyTask(rowData.slug)}
+          >
+            Delete
+          </a>
+        </td>
+      </tr>
+    ))}
+  </tbody>
 );
 
-export default Table;
+TableRow.propTypes = {
+  data: PropTypes.array.isRequired,
+  destroyTask: PropTypes.func,
+  showTask: PropTypes.func,
+};
+
+export default TableRow;
