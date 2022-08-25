@@ -44,6 +44,14 @@ group :development do
   gem "spring"
 end
 
+group :development, :test do
+  # Rails integration for factory_bot, a replacement for fixtures
+  gem "factory_bot_rails"
+
+  # For auto-generating demo data
+  gem "faker"
+end
+
 group :test do
   # Adds support for Capybara system testing and selenium driver
   # Easy installation and use of web drivers to run system tests with browsers
@@ -68,3 +76,5 @@ end
 gem "bcrypt", "~> 3.1.13"
 
 gem "simplecov", require: false, group: :test
+
+gem "pundit"
