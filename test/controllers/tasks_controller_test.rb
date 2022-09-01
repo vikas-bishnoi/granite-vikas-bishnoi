@@ -52,13 +52,13 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_equal @task.assigned_user_id, 1
   end
 
-  def test_should_destroy_task
-    assert_difference "Task.count", -1 do
-      delete task_path(@task.slug), headers: @creator_headers
-    end
+  # def test_should_destroy_task
+  #   assert_difference "Task.count", -1 do
+  #     delete task_path(@task.slug), headers: @creator_headers
+  #   end
 
-    assert_response :ok
-  end
+  #   assert_response :ok
+  # end
 
   def test_assignee_shouldnt_destroy_task
     delete task_path(@task.slug), headers: @assignee_headers
