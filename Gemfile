@@ -79,4 +79,4 @@ gem "simplecov", require: false, group: :test
 
 gem "pundit"
 
-gem "sidekiq"
+gem "sidekiq", "~>6.5.6"
