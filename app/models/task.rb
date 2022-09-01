@@ -10,6 +10,7 @@ class Task < ApplicationRecord
   has_many :comments, dependent: :destroy
 
   validates :title, presence: true, length: { maximum: MAX_TITLE_LENGTH }
+  validates :assigned_user, presence: true
   validates :slug, uniqueness: true
   validate :slug_not_changed
 
@@ -17,12 +18,9 @@ class Task < ApplicationRecord
   belongs_to :assigned_user, foreign_key: "assigned_user_id", class_name: "User"
 
   before_create :set_slug
+  after_create :log_task_details
 
   private
-
-    def set_title
-      self.title = "Pay electricity bill"
-    end
 
     def set_slug
       title_slug = title.parameterize
@@ -56,5 +54,9 @@ class Task < ApplicationRecord
         unstarred = completed.unstarred.order("updated_at DESC")
       end
       starred + unstarred
+    end
+
+    def log_task_details
+      TaskLoggerJob.perform_later(self)
     end
 end

@@ -42,18 +42,4 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_equal response.parsed_body["error"], "Password confirmation doesn't match Password"
   end
-
-  def test_should_update_user_password
-    old_password = @user.password
-    new_password = "Updated@password123"
-    put user_path(@user),
-      params: {
-        user: {
-          password: new_password
-        }
-      }, headers: @headers
-    assert_response :success
-    assert_equal t("successfully_updated", name: "User"), response_json["notice"]
-    assert_equal new_password, @user.reload.password
-  end
 end

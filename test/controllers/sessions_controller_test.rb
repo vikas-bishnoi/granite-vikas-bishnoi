@@ -16,6 +16,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   def test_shouldnt_login_user_with_invalid_credentials
     post session_path, params: { login: { email: @user.email, password: "invalid password" } }, as: :json
     assert_response :unauthorized
+    response_json = response.parsed_body
     assert_equal response_json["error"], t("session.incorrect_credentials")
   end
 
@@ -23,6 +24,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     non_existent_email = "this_email_does_not_exist_in_db@example.email"
     post session_path, params: { login: { email: non_existent_email, password: "welcome" } }, as: :json
     assert_response :not_found
-    assert_equal response_json["error"], "User not found"
+    response_json = response.parsed_body
+    assert_equal response_json["error"], "Couldn't find User"
   end
 end

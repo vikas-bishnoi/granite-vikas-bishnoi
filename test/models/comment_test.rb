@@ -8,6 +8,7 @@ class CommentTest < ActiveSupport::TestCase
   end
 
   # embed new test cases here...
+
   def test_comment_should_be_invalid_without_content
     @comment.content = ""
     assert @comment.invalid?
@@ -26,11 +27,6 @@ class CommentTest < ActiveSupport::TestCase
 
   def test_comment_should_not_be_valid_without_user
     @comment.user = nil
-    assert @comment.invalid?
-  end
-
-  def test_comment_should_not_be_valid_without_task
-    @comment.task = nil
     assert @comment.invalid?
   end
 end

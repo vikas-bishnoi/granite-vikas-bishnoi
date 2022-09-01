@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  include Pundit
   before_action :authenticate_user_using_x_auth_token
 
   rescue_from ActiveRecord::RecordNotFound, with: :handle_record_not_found
   rescue_from ActiveRecord::RecordInvalid, with: :handle_validation_error
   rescue_from ActiveRecord::RecordNotUnique, with: :handle_record_not_unique
   rescue_from ActionController::ParameterMissing, with: :handle_api_error
-
   rescue_from Pundit::NotAuthorizedError, with: :handle_authorization_error
+
+  include Pundit::Authorization
 
   private
 
@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
 
     def respond_with_error(message, status = :unprocessable_entity, context = {})
       is_exception = message.kind_of?(StandardError)
-      error_message = is_exception ? message.record&.errors.full_messages.to_sentence : message
+      error_message = is_exception ? message.record&.errors_to_sentence : message
       render status: status, json: { error: error_message }.merge(context)
     end
 
@@ -43,12 +43,6 @@ class ApplicationController < ActionController::Base
       render status: status, json: json
     end
 
-    def respond_with_error(message, status = :unprocessable_entity, context = {})
-      is_exception = message.kind_of?(StandardError)
-      error_message = is_exception ? message.record&.errors_to_sentence : message
-      render status: status, json: { error: error_message }.merge(context)
-    end
-
     def authenticate_user_using_x_auth_token
       user_email = request.headers["X-Auth-Email"].presence
       auth_token = request.headers["X-Auth-Token"].to_s
@@ -57,7 +51,7 @@ class ApplicationController < ActionController::Base
       if is_valid_token
         @current_user = user
       else
-        respond_with_error(t("session.could_not_auth"), :unauthorized)
+        respond_with_error("Could not authenticate with the provided credentials", :unauthorized)
       end
     end
 
@@ -66,6 +60,6 @@ class ApplicationController < ActionController::Base
     end
 
     def handle_authorization_error
-      respond_with_error(t("authorization.denied"), :forbidden)
+      respond_with_error("Access denied. You are not authorized to perform this action.", :forbidden)
     end
 end

@@ -7,4 +7,6 @@ class Comment < ApplicationRecord
   belongs_to :task # Each comment belongs to a single task
 
   validates :content, presence: true, length: { maximum: MAX_CONTENT_LENGTH }
+  validates :user, presence: true
+  validates :task, presence: true
 end

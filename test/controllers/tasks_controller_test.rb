@@ -65,7 +65,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
     response_json = response.parsed_body
     assert_equal response_json["error"], t("authorization.denied")
-  end
+end
 
   def test_assignee_shouldnt_update_restricted_task_fields
     new_title = "#{@task.title}-(updated)"

@@ -24,7 +24,7 @@ class TaskTest < ActiveSupport::TestCase
   def test_task_should_not_be_valid_without_user
     @task.assigned_user = nil
     assert_not @task.save
-    assert_includes @task.errors.full_messages, "Assigned user must exist"
+    assert_includes @task.errors.full_messages, "Assigned user can't be blank"
   end
 
   def test_task_title_should_not_exceed_maximum_length
