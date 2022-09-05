@@ -104,4 +104,12 @@ end
     assert_response :not_found
     assert_equal response.parsed_body["error"], t("task.not_found")
   end
+
+  def test_not_found_error_rendered_for_invalid_task_slug
+    invalid_slug = "invalid-slug"
+
+    get task_path(invalid_slug), headers: @creator_headers
+    assert_response :not_found
+    assert_equal response_json["error"], t("not_found", entity: "Task")
+  end
 end
